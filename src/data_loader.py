@@ -7,9 +7,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from embedding_function import *
 
-DB_PATH = "../MATH_DB"
+DB_PATH = "../DATA_DB"
 DATA_PATH = "../data"
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
 
 def load_documents():
@@ -24,13 +23,14 @@ def load_documents():
 
 def split_documents(documents):
     """
-    Split the documents into characters.
+    Split the documents into chunks.
     """
-    # Create the splitter
+    # Adjust chunk size and overlap
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=100,
-        length_function=len
+        chunk_size=1024,
+        chunk_overlap=50,
+        length_function=len,
+        is_separator_regex=False
     )
 
     return splitter.split_documents(documents)
@@ -85,25 +85,14 @@ def update_database(chunks):
     print(f"Number of existing documents in DB: {len(existing_ids)}")
 
     # Only add documents that don't exist in the DB.
-    new_chunks = []
-    for chunk in chunks_with_ids:
-        if chunk.metadata["id"] not in existing_ids:
-            new_chunks.append(chunk)
+    new_chunks = [chunk for chunk in chunks_with_ids if chunk.metadata["id"] not in existing_ids]
 
-    if len(new_chunks):
+    if new_chunks:
         print(f"👉 Adding new documents: {len(new_chunks)}")
-        new_chunk_ids = []
-        total_chunks = len(new_chunks)
-        for i, chunk in enumerate(new_chunks):
-            new_chunk_ids.append(chunk.metadata["id"])
-            # time.sleep(1)  # sleep for 1 second
-            progress = (i + 1) / total_chunks * 100
-            print(f"Adding document: {chunk.metadata['id']}. Progress: {progress:.2f}%")
-        db.add_documents(new_chunks, ids=new_chunk_ids)
+        db.add_documents(new_chunks, ids=[chunk.metadata["id"] for chunk in new_chunks])
         db.persist()
     else:
         print("✅ No new documents to add")
-
 
 def clear_database():
     """
@@ -135,6 +124,8 @@ def main():
 
     # Update the database
     update_database(chunks)
+
+    print("\nDatabase updated ✅.")
 
 
 if __name__ == "__main__":
