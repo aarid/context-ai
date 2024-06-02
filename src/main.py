@@ -1,11 +1,8 @@
-import argparse
-
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.vectorstores import Chroma
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_community.vectorstores import Chroma
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
-from openai import OpenAI
 
 from embedding_function import *
 
@@ -63,19 +60,6 @@ def query_rag(query_text: str):
         }
     )
 
-
-
-    # context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-    # prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-    # prompt = prompt_template.format(context=context_text, question=query_text)
-    # print(prompt)
-    #
-    # llm = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
-    #
-    # completion =  llm.chat.completions.create(model="microsoft/Phi-3-mini-4k-instruct-gguf", messages=prompt)
-    # response_text = llm.invoke(prompt)
-
-
     sources = [doc.metadata.get("id", None) for doc, _score in results]
     formatted_response = f"Response: {response_text}\nSources: {sources}"
     print(formatted_response)
@@ -89,6 +73,7 @@ def main():
             break
         elif query_text != "":
             query_rag(query_text)
+
 
 if __name__ == "__main__":
     main()

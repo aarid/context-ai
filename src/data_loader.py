@@ -1,13 +1,9 @@
 import argparse
-import os
 import shutil
-import time
 
 from langchain_community.document_loaders import PyPDFDirectoryLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.schema.document import Document
-from embedding_function import get_embedding_bedrock_function
 from langchain_community.vectorstores import Chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from embedding_function import *
 

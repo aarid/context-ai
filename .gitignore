@@ -1,5 +1,7 @@
 data/*
 data_to_be_loaded/*
+evaluation_dataset/*
+.deepeval
 
 tmp/*
 
