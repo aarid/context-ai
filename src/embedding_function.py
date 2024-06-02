@@ -3,7 +3,6 @@ import os
 from langchain_community.embeddings import GPT4AllEmbeddings
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_community.embeddings.bedrock import BedrockEmbeddings
-from langchain_openai import OpenAIEmbeddings
 
 HF_INFERENCE_API_KEY = os.environ["HF_INFERENCE_API_KEY"]
 
@@ -22,14 +21,6 @@ def get_gpt4all_embedding_function():
     """
     # Create the GPT4All embedding function
     return GPT4AllEmbeddings()
-
-
-def get_openai_embedding_function():
-    """
-    Get the OpenAI embedding function.
-    """
-    # Create the OpenAI embedding function
-    return OpenAIEmbeddings(api_key=os.environ["OPENAI_API_KEY"])
 
 
 def get_embedding_bedrock_function():
